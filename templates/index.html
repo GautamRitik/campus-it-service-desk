@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Campus IT Service Desk and Asset Management System</h1>
-<p>Welcome to the project homepage.</p>
+<div class="hero-section">
+    <h1>Campus IT Service Desk and Asset Management System</h1>
+    <p>
+        Manage campus IT assets and support tickets in one place.
+        Track devices, monitor service requests, and keep location information organized.
+    </p>
+</div>
+
+<div class="card-grid">
+    <div class="info-card">
+        <h2>Asset Management</h2>
+        <p>View, add, edit, and delete IT assets such as projectors, routers, switches, and computers.</p>
+        <a class="card-button" href="/assets">Go to Assets</a>
+    </div>
+
+    <div class="info-card">
+        <h2>Ticket Management</h2>
+        <p>Create, update, assign, and track service tickets linked to specific campus assets and locations.</p>
+        <a class="card-button" href="/tickets">Go to Tickets</a>
+    </div>
+</div>
 {% endblock %}

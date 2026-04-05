@@ -4,6 +4,11 @@
 {% block content %}
 <h2>Edit Asset</h2>
 
+<!-- Show friendly error message if duplicate serial number or other DB error happens -->
+{% if error_message %}
+    <p style="color: red; font-weight: bold;">{{ error_message }}</p>
+{% endif %}
+
 <!-- Form to submit updated asset data -->
 <form method="POST">
     <!-- Asset Name Input - pre-filled with current value -->

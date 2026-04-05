@@ -4,24 +4,29 @@
 {% block content %}
 <h2>Add Asset</h2>
 
+<!-- Show friendly error message if duplicate serial number or other DB error happens -->
+{% if error_message %}
+    <p style="color: red; font-weight: bold;">{{ error_message }}</p>
+{% endif %}
+
 <!-- Form to submit new asset data -->
 <form method="POST" action="/add_asset">
     <!-- Asset Name Input -->
     <p>
         <label>Asset Name:</label><br>
-        <input type="text" name="asset_name" required>
+        <input type="text" name="asset_name" required value="{{ entered_asset_name if entered_asset_name else '' }}">
     </p>
 
     <!-- Asset Type Input (e.g., Computer, Printer, Router) -->
     <p>
         <label>Asset Type:</label><br>
-        <input type="text" name="asset_type" required>
+        <input type="text" name="asset_type" required value="{{ entered_asset_type if entered_asset_type else '' }}">
     </p>
 
     <!-- Serial Number Input - unique identifier for the asset -->
     <p>
         <label>Serial Number:</label><br>
-        <input type="text" name="serial_number" required>
+        <input type="text" name="serial_number" required value="{{ entered_serial_number if entered_serial_number else '' }}">
     </p>
 
     <!-- Location Dropdown - select where the asset is located -->
@@ -30,7 +35,8 @@
         <select name="location_id" required>
             <!-- Display available locations (building name and room number) -->
             {% for location in locations %}
-                <option value="{{ location[0] }}">
+                <option value="{{ location[0] }}"
+                    {% if entered_location_id and entered_location_id|string == location[0]|string %}selected{% endif %}>
                     {{ location[1] }} - Room {{ location[2] }}
                 </option>
             {% endfor %}
