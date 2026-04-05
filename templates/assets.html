@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+<!-- Assets Page - Display list of all IT assets -->
+{% block content %}
+<h2>Assets</h2>
+
+<!-- Link to add a new asset -->
+<p><a href="/add_asset">Add New Asset</a></p>
+
+<!-- Table to display all assets -->
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Serial Number</th>
+        <th>Building</th>
+        <th>Room</th>
+        <th>Actions</th>
+    </tr>
+
+    <!-- Loop through each asset from the database and display in table row -->
+    {% for asset in assets %}
+    <tr>
+        <td>{{ asset[0] }}</td>  <!-- Asset ID -->
+        <td>{{ asset[1] }}</td>  <!-- Asset Name -->
+        <td>{{ asset[2] }}</td>  <!-- Asset Type -->
+        <td>{{ asset[3] }}</td>  <!-- Serial Number -->
+        <td>{{ asset[4] }}</td>  <!-- Building Name -->
+        <td>{{ asset[5] }}</td>  <!-- Room Number -->
+        <td>
+            <!-- Edit button - links to edit page for this asset -->
+            <a href="/edit_asset/{{ asset[0] }}">Edit</a>
+
+            <!-- Delete button - submits form to delete this asset -->
+            <form action="/delete_asset/{{ asset[0] }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Are you sure?')">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,22 @@
+<!--
+    Base Template for Campus IT Service Desk
+    This is the main template that all other pages inherit from.
+    It provides the navigation bar and overall page structure.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campus IT Service Desk</title>
+</head>
+<body>
+    <!-- Navigation bar - appears on every page -->
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/assets">Assets</a>
+    </nav>
+    <hr>
+
+    <!-- Content block - each page fills in its own content here -->
+    {% block content %}{% endblock %}
+</body>
+</html>

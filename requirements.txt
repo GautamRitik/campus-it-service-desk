@@ -1,0 +1,11 @@
+# Web Framework
+Flask
+
+# PostgreSQL database adapter for Python
+psycopg2-binary
+
+# Load environment variables from .env file (database credentials, secrets)
+python-dotenv
+
+# WSGI HTTP server for deploying Flask applications
+gunicorn

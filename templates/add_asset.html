@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+<!-- Add Asset Form - Allows users to create a new IT asset -->
+{% block content %}
+<h2>Add Asset</h2>
+
+<!-- Form to submit new asset data -->
+<form method="POST" action="/add_asset">
+    <!-- Asset Name Input -->
+    <p>
+        <label>Asset Name:</label><br>
+        <input type="text" name="asset_name" required>
+    </p>
+
+    <!-- Asset Type Input (e.g., Computer, Printer, Router) -->
+    <p>
+        <label>Asset Type:</label><br>
+        <input type="text" name="asset_type" required>
+    </p>
+
+    <!-- Serial Number Input - unique identifier for the asset -->
+    <p>
+        <label>Serial Number:</label><br>
+        <input type="text" name="serial_number" required>
+    </p>
+
+    <!-- Location Dropdown - select where the asset is located -->
+    <p>
+        <label>Location:</label><br>
+        <select name="location_id" required>
+            <!-- Display available locations (building name and room number) -->
+            {% for location in locations %}
+                <option value="{{ location[0] }}">
+                    {{ location[1] }} - Room {{ location[2] }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <!-- Submit button to add the asset -->
+    <button type="submit">Add Asset</button>
+</form>
+
+<!-- Link back to assets list -->
+<p><a href="/assets">Back to Assets</a></p>
+{% endblock %}

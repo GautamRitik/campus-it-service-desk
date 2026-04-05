@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+<!-- Edit Asset Form - Allows users to update an existing IT asset -->
+{% block content %}
+<h2>Edit Asset</h2>
+
+<!-- Form to submit updated asset data -->
+<form method="POST">
+    <!-- Asset Name Input - pre-filled with current value -->
+    <p>
+        <label>Asset Name:</label><br>
+        <input type="text" name="asset_name" value="{{ asset[1] }}" required>
+    </p>
+
+    <!-- Asset Type Input - pre-filled with current value -->
+    <p>
+        <label>Asset Type:</label><br>
+        <input type="text" name="asset_type" value="{{ asset[2] }}" required>
+    </p>
+
+    <!-- Serial Number Input - pre-filled with current value -->
+    <p>
+        <label>Serial Number:</label><br>
+        <input type="text" name="serial_number" value="{{ asset[3] }}" required>
+    </p>
+
+    <!-- Location Dropdown - pre-selected with current location -->
+    <p>
+        <label>Location:</label><br>
+        <select name="location_id" required>
+            <!-- Display available locations -->
+            {% for location in locations %}
+                <!-- Mark current location as selected -->
+                <option value="{{ location[0] }}"
+                    {% if location[0] == asset[4] %}selected{% endif %}>
+                    {{ location[1] }} - Room {{ location[2] }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <!-- Submit button to update the asset -->
+    <button type="submit">Update Asset</button>
+</form>
+
+<!-- Link back to assets list -->
+<p><a href="/assets">Back to Assets</a></p>
+{% endblock %}
