@@ -190,6 +190,192 @@ def delete_asset(asset_id):
     # Redirect back to assets list
     return redirect(url_for("assets"))
 
+@app.route("/tickets")
+def tickets():
+    """
+    Displays all service tickets with their details.
+    GET: Retrieves all tickets from database and returns tickets.html
+    - Joins Tickets table with Users, Ticket_Status, Assets, and Locations tables
+    - Shows who created/is assigned to each ticket, asset info, and location
+    - Uses LEFT JOIN for optional asset/location (ticket may not have asset assigned)
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Complex query that pulls together all ticket info from multiple related tables
+    cur.execute("""
+        SELECT 
+            t.ticket_id,
+            t.title,
+            t.description,
+            t.created_at,
+            u1.first_name || ' ' || u1.last_name AS created_by,  -- Combines first and last name of user who created ticket
+            u2.first_name || ' ' || u2.last_name AS assigned_to,  -- Combines first and last name of assigned user
+            ts.status_name,
+            a.asset_name,
+            a.asset_type,
+            a.serial_number,
+            l.building_name,
+            l.room_number
+        FROM Tickets t
+        JOIN Users u1 ON t.created_by = u1.user_id  -- Get creator's full name
+        LEFT JOIN Users u2 ON t.assigned_to = u2.user_id  -- Get assignee's full name (optional if unassigned)
+        JOIN Ticket_Status ts ON t.status_id = ts.status_id  -- Get the status name
+        LEFT JOIN Assets a ON t.asset_id = a.asset_id  -- Get asset details if ticket relates to an asset
+        LEFT JOIN Locations l ON a.location_id = l.location_id  -- Get location details of the asset
+        ORDER BY t.ticket_id;
+    """)
+
+    tickets = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template("tickets.html", tickets=tickets)
+
+@app.route("/add_ticket", methods=["GET", "POST"])
+def add_ticket():
+    """
+    Create a new service ticket in the system.
+    GET: Returns the add_ticket.html form with available users, statuses, and assets
+    POST: Inserts new ticket into database and redirects to tickets list
+    - Collects: title, description, created_by, assigned_to, status_id, asset_id from form
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Handle form submission - POST request
+    if request.method == "POST":
+        # Extract all form fields
+        title = request.form["title"]
+        description = request.form["description"]
+        created_by = request.form["created_by"]
+        assigned_to = request.form["assigned_to"]
+        status_id = request.form["status_id"]
+        asset_id = request.form["asset_id"]
+
+        # Insert new ticket into database with all the collected data
+        cur.execute("""
+            INSERT INTO Tickets (title, description, created_by, assigned_to, status_id, asset_id)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (title, description, created_by, assigned_to, status_id, asset_id))
+
+        # Save changes and close connection
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        # Redirect back to tickets list after successful creation
+        return redirect(url_for("tickets"))
+
+    # GET request - fetch all data needed for the form dropdowns
+    # Retrieve all users so they can be selected as creator/assignee
+    cur.execute("SELECT user_id, first_name, last_name FROM Users ORDER BY user_id;")
+    users = cur.fetchall()
+
+    # Retrieve all ticket statuses (Open, In Progress, Closed, etc.)
+    cur.execute("SELECT status_id, status_name FROM Ticket_Status ORDER BY status_id;")
+    statuses = cur.fetchall()
+
+    # Retrieve all assets so they can be linked to the ticket
+    cur.execute("SELECT asset_id, asset_name FROM Assets ORDER BY asset_id;")
+    assets = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    # Return form with all dropdown options
+    return render_template("add_ticket.html", users=users, statuses=statuses, assets=assets)
+
+@app.route("/edit_ticket/<int:ticket_id>", methods=["GET", "POST"])
+def edit_ticket(ticket_id):
+    """
+    Edit an existing service ticket.
+    GET: Returns edit_ticket.html form pre-filled with ticket details
+    POST: Updates ticket in database and redirects to tickets list
+    - URL parameter: ticket_id (integer) - the ticket to edit
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Handle form submission - POST request
+    if request.method == "POST":
+        # Extract updated form fields
+        title = request.form["title"]
+        description = request.form["description"]
+        created_by = request.form["created_by"]
+        assigned_to = request.form["assigned_to"]
+        status_id = request.form["status_id"]
+        asset_id = request.form["asset_id"]
+
+        # Update the ticket with all new values
+        cur.execute("""
+            UPDATE Tickets
+            SET title = %s,
+                description = %s,
+                created_by = %s,
+                assigned_to = %s,
+                status_id = %s,
+                asset_id = %s
+            WHERE ticket_id = %s
+        """, (title, description, created_by, assigned_to, status_id, asset_id, ticket_id))
+
+        # Save changes and close connection
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        # Redirect back to tickets list after successful update
+        return redirect(url_for("tickets"))
+
+    # GET request - fetch the specific ticket by ID to pre-fill the form
+    cur.execute("""
+        SELECT ticket_id, title, description, created_by, assigned_to, status_id, asset_id
+        FROM Tickets
+        WHERE ticket_id = %s
+    """, (ticket_id,))
+    ticket = cur.fetchone()
+
+    # Fetch all users for the dropdown menus
+    cur.execute("SELECT user_id, first_name, last_name FROM Users ORDER BY user_id;")
+    users = cur.fetchall()
+
+    # Fetch all statuses for the status dropdown
+    cur.execute("SELECT status_id, status_name FROM Ticket_Status ORDER BY status_id;")
+    statuses = cur.fetchall()
+
+    # Fetch all assets for the asset dropdown
+    cur.execute("SELECT asset_id, asset_name FROM Assets ORDER BY asset_id;")
+    assets = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    # Return form with current ticket details and all dropdown options
+    return render_template("edit_ticket.html", ticket=ticket, users=users, statuses=statuses, assets=assets)
+
+@app.route("/delete_ticket/<int:ticket_id>", methods=["POST"])
+def delete_ticket(ticket_id):
+    """
+    Delete a service ticket from the system.
+    POST: Removes ticket from database and redirects to tickets list
+    - URL parameter: ticket_id (integer) - the ticket to delete
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Delete the ticket by its ID
+    cur.execute("DELETE FROM Tickets WHERE ticket_id = %s", (ticket_id,))
+    
+    # Save changes and close connection
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    # Redirect back to tickets list
+    return redirect(url_for("tickets"))
+
 # ==================== RUN APPLICATION ====================
 
 if __name__ == "__main__":

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+<!-- Tickets Page - Display list of all service tickets -->
+{% block content %}
+<h2>Tickets</h2>
+
+<!-- Link to create a new ticket -->
+<p><a href="/add_ticket">Add New Ticket</a></p>
+
+<!-- Table to display all tickets -->
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Created By</th>
+        <th>Assigned To</th>
+        <th>Status</th>
+        <th>Asset</th>
+        <th>Type</th>
+        <th>Serial Number</th>
+        <th>Building</th>
+        <th>Room</th>
+        <th>Actions</th>
+    </tr>
+
+    <!-- Loop through each ticket and display in table row -->
+    {% for t in tickets %}
+    <tr>
+        <td>{{ t[0] }}</td>  <!-- Ticket ID -->
+        <td>{{ t[1] }}</td>  <!-- Ticket Title -->
+        <td>{{ t[4] }}</td>  <!-- Created By (User Name) -->
+        <td>{{ t[5] }}</td>  <!-- Assigned To (User Name) -->
+        <td>{{ t[6] }}</td>  <!-- Status -->
+        <td>{{ t[7] }}</td>  <!-- Asset Name -->
+        <td>{{ t[8] }}</td>  <!-- Asset Type -->
+        <td>{{ t[9] }}</td>  <!-- Asset Serial Number -->
+        <td>{{ t[10] }}</td> <!-- Building Name -->
+        <td>{{ t[11] }}</td> <!-- Room Number -->
+        <td>
+            <!-- Edit button - links to edit page for this ticket -->
+            <a href="/edit_ticket/{{ t[0] }}">Edit</a>
+
+            <!-- Delete button - submits form to delete this ticket -->
+            <form action="/delete_ticket/{{ t[0] }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Are you sure?')">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

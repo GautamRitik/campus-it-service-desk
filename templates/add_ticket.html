@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+<!-- Add Ticket Form - Allows users to create a new service ticket -->
+{% block content %}
+<h2>Add Ticket</h2>
+
+<!-- Form to submit new ticket data -->
+<form method="POST" action="/add_ticket">
+    <!-- Ticket Title Input -->
+    <p>
+        <label>Title:</label><br>
+        <input type="text" name="title" required>
+    </p>
+
+    <!-- Ticket Description - detailed info about the issue -->
+    <p>
+        <label>Description:</label><br>
+        <textarea name="description" rows="4" cols="40" required></textarea>
+    </p>
+
+    <!-- Creator Dropdown - selects which user created this ticket -->
+    <p>
+        <label>Created By:</label><br>
+        <select name="created_by" required>
+            {% for user in users %}
+                <option value="{{ user[0] }}">
+                    {{ user[1] }} {{ user[2] }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <!-- Assignee Dropdown - selects which user is responsible for solving the ticket -->
+    <p>
+        <label>Assigned To:</label><br>
+        <select name="assigned_to" required>
+            {% for user in users %}
+                <option value="{{ user[0] }}">
+                    {{ user[1] }} {{ user[2] }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <!-- Status Dropdown - sets the current status (Open, In Progress, Closed, etc.) -->
+    <p>
+        <label>Status:</label><br>
+        <select name="status_id" required>
+            {% for status in statuses %}
+                <option value="{{ status[0] }}">
+                    {{ status[1] }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <!-- Asset Dropdown - links the ticket to a specific IT asset (computer, printer, etc.) -->
+    <p>
+        <label>Asset:</label><br>
+        <select name="asset_id" required>
+            {% for asset in assets %}
+                <option value="{{ asset[0] }}">
+                    {{ asset[1] }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <!-- Submit button to create the ticket -->
+    <button type="submit">Add Ticket</button>
+</form>
+
+<!-- Link back to tickets list -->
+<p><a href="/tickets">Back to Tickets</a></p>
+{% endblock %}

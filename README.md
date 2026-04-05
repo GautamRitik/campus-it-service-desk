@@ -262,3 +262,13 @@ Used to dynamically render HTML.
 
 ### Database (Assets Table)
 ![Database](screenshots/database_assets.png)
+
+### Tickets Page
+![Assets](screenshots/tickets_view.png)
+
+### Add Ticket Form
+![Add Asset](screenshots/add_ticket_form.png)
+
+### Edit Asset Form
+![Edit Asset](screenshots/edit_ticket_form.png)
+
