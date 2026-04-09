@@ -1,39 +1,34 @@
 {% extends "base.html" %}
 
-<!-- Add Asset Form - Allows users to create a new IT asset -->
 {% block content %}
 <h2>Add Asset</h2>
 
-<!-- Show friendly error message if duplicate serial number or other DB error happens -->
 {% if error_message %}
     <p style="color: red; font-weight: bold;">{{ error_message }}</p>
 {% endif %}
 
-<!-- Form to submit new asset data -->
-<form method="POST" action="/add_asset">
-    <!-- Asset Name Input -->
-    <p>
-        <label>Asset Name:</label><br>
-        <input type="text" name="asset_name" required value="{{ entered_asset_name if entered_asset_name else '' }}">
-    </p>
+<form method="POST" action="/add_asset" class="form-layout">
+    <div class="form-row">
+        <label for="asset_name">Asset Name:</label>
+        <input type="text" id="asset_name" name="asset_name" required
+               value="{{ entered_asset_name if entered_asset_name else '' }}">
+    </div>
 
-    <!-- Asset Type Input (e.g., Computer, Printer, Router) -->
-    <p>
-        <label>Asset Type:</label><br>
-        <input type="text" name="asset_type" required value="{{ entered_asset_type if entered_asset_type else '' }}">
-    </p>
+    <div class="form-row">
+        <label for="asset_type">Asset Type:</label>
+        <input type="text" id="asset_type" name="asset_type" required
+               value="{{ entered_asset_type if entered_asset_type else '' }}">
+    </div>
 
-    <!-- Serial Number Input - unique identifier for the asset -->
-    <p>
-        <label>Serial Number:</label><br>
-        <input type="text" name="serial_number" required value="{{ entered_serial_number if entered_serial_number else '' }}">
-    </p>
+    <div class="form-row">
+        <label for="serial_number">Serial Number:</label>
+        <input type="text" id="serial_number" name="serial_number" required
+               value="{{ entered_serial_number if entered_serial_number else '' }}">
+    </div>
 
-    <!-- Location Dropdown - select where the asset is located -->
-    <p>
-        <label>Location:</label><br>
-        <select name="location_id" required>
-            <!-- Display available locations (building name and room number) -->
+    <div class="form-row">
+        <label for="location_id">Location:</label>
+        <select id="location_id" name="location_id" required>
             {% for location in locations %}
                 <option value="{{ location[0] }}"
                     {% if entered_location_id and entered_location_id|string == location[0]|string %}selected{% endif %}>
@@ -41,12 +36,12 @@
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Submit button to add the asset -->
-    <button type="submit">Add Asset</button>
+    <div class="form-actions">
+        <button type="submit">Add Asset</button>
+    </div>
 </form>
 
-<!-- Link back to assets list -->
-<p><a href="/assets">Back to Assets</a></p>
+<a class="back-link" href="/assets">← Back to Assets</a>
 {% endblock %}

@@ -17,11 +17,12 @@ This application helps IT departments track and manage:
 
 ## Features
 
-* Full CRUD operations for Assets (Create, Read, Update, Delete)
+* Full CRUD operations for Assets and Tickets
 * Relational database with multiple linked tables
 * Dynamic web pages using Flask and Jinja2
 * SQL JOIN queries to combine related data
-* Form handling for user input
+* Form handling and validation for user input
+* Error handling with user-friendly messages
 * Clean modular structure for scalability
 
 ---
@@ -62,6 +63,10 @@ This file contains:
   * `/add_asset` - Create new asset (GET shows form, POST saves data)
   * `/edit_asset/<id>` - Edit existing asset
   * `/delete_asset/<id>` - Delete an asset
+  * `/tickets` - View all tickets
+  * `/add_ticket` - Create new ticket
+  * `/edit_ticket/<id>` - Edit existing ticket
+  * `/delete_ticket/<id>` - Delete a ticket
 
 ---
 
@@ -93,11 +98,12 @@ Example:
 
 This allows each asset to display its building and room.
 
-Future ticket functionality will use JOINs across:
+Ticket functionality uses JOINs across:
 
 * `Users` (created_by and assigned_to)
 * `Ticket_Status`
 * `Assets`
+* `Locations`
 
 This demonstrates proper relational database design.
 
@@ -257,9 +263,6 @@ Used to dynamically render HTML.
 ### Edit Asset Form
 ![Edit Asset](screenshots/edit_asset_form.png)
 
-### Asset Created
-![Asset Created](screenshots/asset_created.png)
-
 ### Database (Assets Table)
 ![Database](screenshots/database_assets.png)
 
@@ -271,4 +274,3 @@ Used to dynamically render HTML.
 
 ### Edit Asset Form
 ![Edit Asset](screenshots/edit_ticket_form.png)
-

@@ -1,53 +1,44 @@
 {% extends "base.html" %}
 
-<!-- Edit Asset Form - Allows users to update an existing IT asset -->
 {% block content %}
 <h2>Edit Asset</h2>
 
-<!-- Show friendly error message if duplicate serial number or other DB error happens -->
 {% if error_message %}
     <p style="color: red; font-weight: bold;">{{ error_message }}</p>
 {% endif %}
 
-<!-- Form to submit updated asset data -->
-<form method="POST">
-    <!-- Asset Name Input - pre-filled with current value -->
-    <p>
-        <label>Asset Name:</label><br>
-        <input type="text" name="asset_name" value="{{ asset[1] }}" required>
-    </p>
+<form method="POST" class="form-layout">
+    <div class="form-row">
+        <label for="asset_name">Asset Name:</label>
+        <input type="text" id="asset_name" name="asset_name" value="{{ asset[1] }}" required>
+    </div>
 
-    <!-- Asset Type Input - pre-filled with current value -->
-    <p>
-        <label>Asset Type:</label><br>
-        <input type="text" name="asset_type" value="{{ asset[2] }}" required>
-    </p>
+    <div class="form-row">
+        <label for="asset_type">Asset Type:</label>
+        <input type="text" id="asset_type" name="asset_type" value="{{ asset[2] }}" required>
+    </div>
 
-    <!-- Serial Number Input - pre-filled with current value -->
-    <p>
-        <label>Serial Number:</label><br>
-        <input type="text" name="serial_number" value="{{ asset[3] }}" required>
-    </p>
+    <div class="form-row">
+        <label for="serial_number">Serial Number:</label>
+        <input type="text" id="serial_number" name="serial_number" value="{{ asset[3] }}" required>
+    </div>
 
-    <!-- Location Dropdown - pre-selected with current location -->
-    <p>
-        <label>Location:</label><br>
-        <select name="location_id" required>
-            <!-- Display available locations -->
+    <div class="form-row">
+        <label for="location_id">Location:</label>
+        <select id="location_id" name="location_id" required>
             {% for location in locations %}
-                <!-- Mark current location as selected -->
                 <option value="{{ location[0] }}"
                     {% if location[0] == asset[4] %}selected{% endif %}>
                     {{ location[1] }} - Room {{ location[2] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Submit button to update the asset -->
-    <button type="submit">Update Asset</button>
+    <div class="form-actions">
+        <button type="submit">Update Asset</button>
+    </div>
 </form>
 
-<!-- Link back to assets list -->
-<p><a href="/assets">Back to Assets</a></p>
+<a class="back-link" href="/assets">← Back to Assets</a>
 {% endblock %}

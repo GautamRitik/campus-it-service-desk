@@ -1,83 +1,71 @@
 {% extends "base.html" %}
 
-<!-- Edit Ticket Form - Allows users to update an existing service ticket -->
 {% block content %}
 <h2>Edit Ticket</h2>
 
-<!-- Form to submit updated ticket data -->
-<form method="POST">
-    <!-- Ticket Title Input - pre-filled with current value -->
-    <p>
-        <label>Title:</label><br>
-        <input type="text" name="title" value="{{ ticket[1] }}" required>
-    </p>
+<form method="POST" class="form-layout">
+    <div class="form-row">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{ ticket[1] }}" required>
+    </div>
 
-    <!-- Ticket Description - pre-filled with current value -->
-    <p>
-        <label>Description:</label><br>
-        <textarea name="description" rows="4" cols="40" required>{{ ticket[2] }}</textarea>
-    </p>
+    <div class="form-row">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required>{{ ticket[2] }}</textarea>
+    </div>
 
-    <!-- Creator Dropdown - pre-selected with current creator -->
-    <p>
-        <label>Created By:</label><br>
-        <select name="created_by" required>
+    <div class="form-row">
+        <label for="created_by">Created By:</label>
+        <select id="created_by" name="created_by" required>
             {% for user in users %}
-                <!-- Mark creator as selected -->
                 <option value="{{ user[0] }}"
                     {% if user[0] == ticket[3] %}selected{% endif %}>
                     {{ user[1] }} {{ user[2] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Assignee Dropdown - pre-selected with current assignee -->
-    <p>
-        <label>Assigned To:</label><br>
-        <select name="assigned_to" required>
+    <div class="form-row">
+        <label for="assigned_to">Assigned To:</label>
+        <select id="assigned_to" name="assigned_to" required>
             {% for user in users %}
-                <!-- Mark current assignee as selected -->
                 <option value="{{ user[0] }}"
                     {% if user[0] == ticket[4] %}selected{% endif %}>
                     {{ user[1] }} {{ user[2] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Status Dropdown - pre-selected with current status -->
-    <p>
-        <label>Status:</label><br>
-        <select name="status_id" required>
+    <div class="form-row">
+        <label for="status_id">Status:</label>
+        <select id="status_id" name="status_id" required>
             {% for status in statuses %}
-                <!-- Mark current status as selected -->
                 <option value="{{ status[0] }}"
                     {% if status[0] == ticket[5] %}selected{% endif %}>
                     {{ status[1] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Asset Dropdown - pre-selected with current asset -->
-    <p>
-        <label>Asset:</label><br>
-        <select name="asset_id" required>
+    <div class="form-row">
+        <label for="asset_id">Asset:</label>
+        <select id="asset_id" name="asset_id" required>
             {% for asset in assets %}
-                <!-- Mark current asset as selected -->
                 <option value="{{ asset[0] }}"
                     {% if asset[0] == ticket[6] %}selected{% endif %}>
                     {{ asset[1] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Submit button to update the ticket -->
-    <button type="submit">Update Ticket</button>
+    <div class="form-actions">
+        <button type="submit">Update Ticket</button>
+    </div>
 </form>
 
-<!-- Link back to tickets list -->
-<p><a href="/tickets">Back to Tickets</a></p>
+<a class="back-link" href="/tickets">← Back to Tickets</a>
 {% endblock %}

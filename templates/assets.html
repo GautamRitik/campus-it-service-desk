@@ -2,14 +2,14 @@
 
 <!-- Assets Page - Display list of all IT assets -->
 {% block content %}
-<h2>Assets</h2>
+<div class="page-top">
+    <h2>Assets</h2>
+    <a class="button-link" href="/add_asset">Add New Asset</a>
+</div>
 
 {% if error_message %}
-    <p style="color: red; font-weight: bold;">{{ error_message }}</p>
+    <p class="error-message">{{ error_message }}</p>
 {% endif %}
-
-<!-- Link to add a new asset -->
-<p><a href="/add_asset">Add New Asset</a></p>
 
 <!-- Table to display all assets -->
 <table border="1">
@@ -33,15 +33,14 @@
         <td>{{ asset[4] }}</td>
         <td>{{ asset[5] }}</td>
         <td>
-            <!-- Edit button - links to edit page for this asset -->
-            <a href="/edit_asset/{{ asset[0] }}">Edit</a>
+            <!-- Action buttons for Edit and Delete -->
+            <div class="action-links">
+                <a class="small-link" href="/edit_asset/{{ asset[0] }}">Edit</a>
 
-            <!-- Delete button - submits form to delete this asset -->
-            <form action="/delete_asset/{{ asset[0] }}" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('Are you sure?')">
-                    Delete
-                </button>
-            </form>
+                <form class="inline-form" action="/delete_asset/{{ asset[0] }}" method="POST">
+                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </div>
         </td>
     </tr>
     {% endfor %}

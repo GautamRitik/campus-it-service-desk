@@ -1,23 +1,26 @@
-<!--
-    Base Template for Campus IT Service Desk
-    This is the main template that all other pages inherit from.
-    It provides the navigation bar and overall page structure.
--->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus IT Service Desk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Navigation bar - appears on every page -->
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/assets">Assets</a>
-        <a href="/tickets">Tickets</a>
-    </nav>
-    <hr>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Campus IT Service Desk</a>
 
-    <!-- Content block - each page fills in its own content here -->
-    {% block content %}{% endblock %}
+            <div class="nav-links">
+                <a href="/" class="{% if request.path == '/' %}active-link{% endif %}">Home</a>
+                <a href="/assets" class="{% if '/assets' in request.path %}active-link{% endif %}">Assets</a>
+                <a href="/tickets" class="{% if '/tickets' in request.path %}active-link{% endif %}">Tickets</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        {% block content %}{% endblock %}
+    </main>
 </body>
 </html>

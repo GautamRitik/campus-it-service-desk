@@ -4,8 +4,11 @@ This Flask app manages IT assets and service tickets for campus facilities.
 Users can view, add, edit, and delete assets, as well as create and manage tickets.
 """
 
+# Web framework and utilities
 from flask import Flask, render_template, request, redirect, url_for
 import os
+
+# Database and environment configuration
 import psycopg2
 from dotenv import load_dotenv
 
@@ -36,6 +39,7 @@ def get_assets_with_locations():
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # Retrieve asset details joined with location info (building and room number)
     cur.execute("""
         SELECT a.asset_id, a.asset_name, a.asset_type, a.serial_number,
                l.building_name, l.room_number
@@ -92,6 +96,7 @@ def add_asset():
         location_id = request.form["location_id"]
 
         try:
+            # Attempt to insert new asset into database
             cur.execute("""
                 INSERT INTO Assets (asset_name, asset_type, serial_number, location_id)
                 VALUES (%s, %s, %s, %s)
@@ -116,11 +121,13 @@ def add_asset():
             cur.close()
             conn.close()
 
+            # Provide specific error message based on the type of database error
             if "assets_serial_number_key" in str(e):
                 error_message = "That serial number already exists. Please enter a unique serial number."
             else:
                 error_message = "An error occurred while adding the asset. Please try again."
 
+            # Return form with error message and previously entered data
             return render_template(
                 "add_asset.html",
                 locations=locations,
@@ -161,6 +168,7 @@ def edit_asset(asset_id):
         location_id = request.form["location_id"]
 
         try:
+            # Update asset record in database
             cur.execute("""
                 UPDATE Assets
                 SET asset_name = %s,
@@ -177,6 +185,7 @@ def edit_asset(asset_id):
             return redirect(url_for("assets"))
 
         except psycopg2.Error as e:
+            # Rollback changes if update fails (e.g., duplicate serial number)
             conn.rollback()
 
             cur.execute("""
@@ -189,11 +198,13 @@ def edit_asset(asset_id):
             cur.close()
             conn.close()
 
+            # Provide specific error message based on the type of database error
             if "assets_serial_number_key" in str(e):
                 error_message = "That serial number already exists. Please enter a unique serial number."
             else:
                 error_message = "An error occurred while updating the asset. Please try again."
 
+            # Return form with error message and previously entered data
             asset = (asset_id, asset_name, asset_type, serial_number, int(location_id))
 
             return render_template(
@@ -203,6 +214,7 @@ def edit_asset(asset_id):
                 error_message=error_message
             )
 
+    # Retrieve the specific asset to be edited (GET request)
     cur.execute("""
         SELECT asset_id, asset_name, asset_type, serial_number, location_id
         FROM Assets
@@ -210,6 +222,7 @@ def edit_asset(asset_id):
     """, (asset_id,))
     asset = cur.fetchone()
 
+    # Fetch all available locations for the location dropdown
     cur.execute("""
         SELECT location_id, building_name, room_number
         FROM Locations
@@ -233,14 +246,17 @@ def delete_asset(asset_id):
     cur = conn.cursor()
 
     try:
+        # Attempt to delete the asset from the database
         cur.execute("DELETE FROM Assets WHERE asset_id = %s", (asset_id,))
         conn.commit()
 
     except psycopg2.Error as e:
+        # Handle foreign key constraint error: asset is referenced by tickets
         conn.rollback()
         cur.close()
         conn.close()
 
+        # Check if error is due to foreign key constraint (asset linked to tickets)
         if "tickets_asset_id_fkey" in str(e):
             return render_template(
                 "assets.html",
@@ -270,6 +286,8 @@ def tickets():
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # Retrieve all tickets with user, asset, status, and location details
+    # Uses LEFT JOIN for optional asset/location relationships
     cur.execute("""
         SELECT 
             t.ticket_id,
@@ -319,6 +337,7 @@ def add_ticket():
         status_id = request.form["status_id"]
         asset_id = request.form["asset_id"]
 
+        # Insert new ticket into database with current timestamp
         cur.execute("""
             INSERT INTO Tickets (title, description, created_by, assigned_to, status_id, asset_id)
             VALUES (%s, %s, %s, %s, %s, %s)
@@ -330,12 +349,16 @@ def add_ticket():
 
         return redirect(url_for("tickets"))
 
+    # For GET request, fetch dropdown data for form fields
+    # Retrieve all users for "Created By" and "Assigned To" dropdowns
     cur.execute("SELECT user_id, first_name, last_name FROM Users ORDER BY user_id;")
     users = cur.fetchall()
 
+    # Retrieve all ticket statuses for the status dropdown
     cur.execute("SELECT status_id, status_name FROM Ticket_Status ORDER BY status_id;")
     statuses = cur.fetchall()
 
+    # Retrieve all assets for the asset dropdown (can be left empty for tickets without assets)
     cur.execute("SELECT asset_id, asset_name FROM Assets ORDER BY asset_id;")
     assets = cur.fetchall()
 
@@ -363,6 +386,7 @@ def edit_ticket(ticket_id):
         status_id = request.form["status_id"]
         asset_id = request.form["asset_id"]
 
+        # Update the ticket record in database
         cur.execute("""
             UPDATE Tickets
             SET title = %s,
@@ -380,6 +404,7 @@ def edit_ticket(ticket_id):
 
         return redirect(url_for("tickets"))
 
+    # Retrieve the current ticket data for the form (GET request)
     cur.execute("""
         SELECT ticket_id, title, description, created_by, assigned_to, status_id, asset_id
         FROM Tickets
@@ -387,6 +412,7 @@ def edit_ticket(ticket_id):
     """, (ticket_id,))
     ticket = cur.fetchone()
 
+    # Fetch dropdown data for form fields on edit page
     cur.execute("SELECT user_id, first_name, last_name FROM Users ORDER BY user_id;")
     users = cur.fetchall()
 
@@ -411,6 +437,7 @@ def delete_ticket(ticket_id):
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # Delete the ticket from the database by ID
     cur.execute("DELETE FROM Tickets WHERE ticket_id = %s", (ticket_id,))
     conn.commit()
 

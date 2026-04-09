@@ -1,75 +1,67 @@
 {% extends "base.html" %}
 
-<!-- Add Ticket Form - Allows users to create a new service ticket -->
 {% block content %}
 <h2>Add Ticket</h2>
 
-<!-- Form to submit new ticket data -->
-<form method="POST" action="/add_ticket">
-    <!-- Ticket Title Input -->
-    <p>
-        <label>Title:</label><br>
-        <input type="text" name="title" required>
-    </p>
+<form method="POST" action="/add_ticket" class="form-layout">
+    <div class="form-row">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+    </div>
 
-    <!-- Ticket Description - detailed info about the issue -->
-    <p>
-        <label>Description:</label><br>
-        <textarea name="description" rows="4" cols="40" required></textarea>
-    </p>
+    <div class="form-row">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+    </div>
 
-    <!-- Creator Dropdown - selects which user created this ticket -->
-    <p>
-        <label>Created By:</label><br>
-        <select name="created_by" required>
+    <div class="form-row">
+        <label for="created_by">Created By:</label>
+        <select id="created_by" name="created_by" required>
             {% for user in users %}
                 <option value="{{ user[0] }}">
                     {{ user[1] }} {{ user[2] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Assignee Dropdown - selects which user is responsible for solving the ticket -->
-    <p>
-        <label>Assigned To:</label><br>
-        <select name="assigned_to" required>
+    <div class="form-row">
+        <label for="assigned_to">Assigned To:</label>
+        <select id="assigned_to" name="assigned_to" required>
             {% for user in users %}
                 <option value="{{ user[0] }}">
                     {{ user[1] }} {{ user[2] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Status Dropdown - sets the current status (Open, In Progress, Closed, etc.) -->
-    <p>
-        <label>Status:</label><br>
-        <select name="status_id" required>
+    <div class="form-row">
+        <label for="status_id">Status:</label>
+        <select id="status_id" name="status_id" required>
             {% for status in statuses %}
                 <option value="{{ status[0] }}">
                     {{ status[1] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Asset Dropdown - links the ticket to a specific IT asset (computer, printer, etc.) -->
-    <p>
-        <label>Asset:</label><br>
-        <select name="asset_id" required>
+    <div class="form-row">
+        <label for="asset_id">Asset:</label>
+        <select id="asset_id" name="asset_id" required>
             {% for asset in assets %}
                 <option value="{{ asset[0] }}">
                     {{ asset[1] }}
                 </option>
             {% endfor %}
         </select>
-    </p>
+    </div>
 
-    <!-- Submit button to create the ticket -->
-    <button type="submit">Add Ticket</button>
+    <div class="form-actions">
+        <button type="submit">Add Ticket</button>
+    </div>
 </form>
 
-<!-- Link back to tickets list -->
-<p><a href="/tickets">Back to Tickets</a></p>
+<a class="back-link" href="/tickets">← Back to Tickets</a>
 {% endblock %}
